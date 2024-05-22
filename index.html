@@ -8,23 +8,30 @@
 </head>
 <body>
 
-
 <div class="todo-app">
-    <h2>To-Do List <img src="./images/task.png"></h2>
-    <div class="row">
-      <input type="text" id="input-box" placeholder="Add your Task">
-      <button id="add-task-btn">Add Task</button>
-    </div>
-    <ul id="list-container">
-    </ul>
+  <h2>To-Do List <img src="./images/task.png"></h2>
+  <div class="row">
+    <input type="text" id="input-box" placeholder="Add your Task">
+    <button id="add-task-btn">Add Task</button>
+  </div>
+  <div class="filter-row">
+    <button id="all-tasks">All</button>
+    <button id="active-tasks">Active</button>
+    <button id="completed-tasks">Completed</button>
+  </div>
+  <ul id="list-container"></ul>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-
+    
     let listContainer = document.getElementById('list-container');
     let inputBox = document.getElementById('input-box');
     let addButton = document.getElementById('add-task-btn');
+
+    let allTasksButton = document.getElementById('all-tasks');
+    let activeTasksButton = document.getElementById('active-tasks');
+    let completedTasksButton = document.getElementById('completed-tasks');
 
     function addTask() {
       if (inputBox.value.trim() === '') {
@@ -48,11 +55,49 @@
     listContainer.addEventListener('click', function(el) {
       if (el.target.tagName === 'LI') {
         el.target.classList.toggle('checked');
+        saveData();
       } else if (el.target.tagName === 'SPAN') {
         el.target.parentElement.remove();
         saveData();
       }
     });
+
+    allTasksButton.addEventListener('click', function() {
+      filterTasks('all');
+    });
+
+    activeTasksButton.addEventListener('click', function() {
+      filterTasks('active');
+    });
+
+    completedTasksButton.addEventListener('click', function() {
+      filterTasks('completed');
+    });
+
+    function filterTasks(type) {
+      let tasks = listContainer.getElementsByTagName('li');
+      for (let task of tasks) {
+        switch(type) {
+          case 'all':
+            task.style.display = 'list-item';
+            break;
+          case 'active':
+            if (task.classList.contains('checked')) {
+              task.style.display = 'none';
+            } else {
+              task.style.display = 'list-item';
+            }
+            break;
+          case 'completed':
+            if (task.classList.contains('checked')) {
+              task.style.display = 'list-item';
+            } else {
+              task.style.display = 'none';
+            }
+            break;
+        }
+      }
+    }
 
     function saveData() {
       localStorage.setItem("tasks", listContainer.innerHTML);
