@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do list</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<div class="todo-app">
+    <h2>To-Do List <img src="./images/task.png"></h2>
+    <div class="row">
+      <input type="text" id="input-box" placeholder="Add your Task">
+      <button id="add-task-btn">Add Task</button>
+    </div>
+    <ul id="list-container">
+    </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+    let listContainer = document.getElementById('list-container');
+    let inputBox = document.getElementById('input-box');
+    let addButton = document.getElementById('add-task-btn');
+
+    function addTask() {
+      if (inputBox.value.trim() === '') {
+        alert("Please insert a value");
+      } else {
+        let task = document.createElement('li');
+        task.textContent = inputBox.value.trim();
+
+        let span = document.createElement('span');
+        span.textContent = '\u00d7';
+        task.appendChild(span);
+
+        listContainer.appendChild(task);
+        inputBox.value = '';
+        saveData();
+      }
+    }
+
+    addButton.addEventListener('click', addTask);
+
+    listContainer.addEventListener('click', function(el) {
+      if (el.target.tagName === 'LI') {
+        el.target.classList.toggle('checked');
+      } else if (el.target.tagName === 'SPAN') {
+        el.target.parentElement.remove();
+        saveData();
+      }
+    });
+
+    function saveData() {
+      localStorage.setItem("tasks", listContainer.innerHTML);
+    }
+
+    function showData() {
+      if (localStorage.getItem('tasks')) {
+        listContainer.innerHTML = localStorage.getItem('tasks');
+      }
+    }
+
+    showData();
+  });
+</script>
+
+</body>
+</html>
